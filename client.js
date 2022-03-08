@@ -32,14 +32,7 @@ amqp.connect('amqp://localhost', function(error0, connection) {
             inicio = i * tam_por_div;
             final = inicio + tam_por_div;
 
-            let teste = Buffer.alloc(tam_por_div);
-            let aux = inicio;
-            teste.forEach((index) => {
-                teste.writeBigUInt64BE(vetor[aux], index);
-                aux++;
-            });
-
-            channel.publish(exchange, '', teste);
+            channel.publish(exchange, '', Buffer.from(vetor.slice(inicio, final)));
             console.log(`[x] Sent ${i} ${vetor.slice(inicio, final)}`);
         }
 

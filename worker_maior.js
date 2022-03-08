@@ -39,7 +39,7 @@ amqp.connect('amqp://localhost', function(error0, connection) {
                 if (objVetor.content) {
                     console.log(` [x] vetor recebido!`);
                     verificaMaior(objVetor.content.data);
-                    console.log(vetor);
+                    console.log(objVetor.content.data);
                     console.log(` [*] O maior valor é:${maior}`);
                     count++;
 
