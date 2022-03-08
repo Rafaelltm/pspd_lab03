@@ -1,16 +1,16 @@
 var amqp = require('amqplib/callback_api');
 
 function geraVetor(vetor, tamanho) {
-    for(i = 0;i < tamanho;i++) {
-        vetor[i] = parseFloat((i - tamanho/2) ** 2);
+    for (i = 0; i < tamanho; i++) {
+        vetor[i] = ((i - tamanho / 2) ** 2);
     }
 }
- 
-amqp.connect('amqp://localhost', function(error0, connection) {
+
+amqp.connect('amqp://localhost', function (error0, connection) {
     if (error0) {
         throw error0;
     }
-    connection.createChannel(function(error1, channel) {
+    connection.createChannel(function (error1, channel) {
         if (error1) {
             throw error1;
         }
@@ -28,26 +28,26 @@ amqp.connect('amqp://localhost', function(error0, connection) {
         var inicio = 0;
         var final = 0;
         var tam_por_div = tamanho / div;
-        for(i = 0; i < div; i++) {
+        for (i = 0; i < div; i++) {
             inicio = i * tam_por_div;
             final = inicio + tam_por_div;
-
-            channel.publish(exchange, '', Buffer.from(vetor.slice(inicio, final)));
-            console.log(`[x] Sent ${i} ${vetor.slice(inicio, final)}`);
+            var stringArray = vetor.slice(inicio, final).join(" ")
+            channel.publish(exchange, '', Buffer.from(stringArray));
+            console.log(`[x] Sent ${i} ${stringArray}`);
         }
 
-        connection.createChannel(function(error1, channel) {
+        connection.createChannel(function (error1, channel) {
             if (error1) {
                 throw error1;
             }
-    
+
             var queue = 'response';
-    
+
             channel.assertQueue(queue, {
                 durable: false
             });
-    
-            channel.consume(queue, function(msg) {
+
+            channel.consume(queue, function (msg) {
                 console.log(" [*] Received %s", msg.content.toString());
             }, {
                 noAck: true
